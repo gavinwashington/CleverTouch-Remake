@@ -1,4 +1,4 @@
-# WARNING
+# HOW TO USE IT
 
-This is a replica of the popular device schools use.
-DO NOT USE THIS FOR ANY TYPE OF BAD THINGS!
+Either download it or go to index.html and download it (limited use)
+go to the downloads tab and copy paste it in your browser it doesn’t matter (Unlimited Use)
