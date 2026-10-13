@@ -1,0 +1,1579 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>CleverTouch Smart Board</title>
+
+<style>
+
+* {
+
+  box-sizing: border-box;
+
+  -webkit-tap-highlight-color: transparent;
+
+}
+
+:root {
+
+  --blue: #1675ed;
+
+  --panel: #101b2d;
+
+  --card: #1c2a40;
+
+  --white: #ffffff;
+
+}
+
+body {
+
+  margin: 0;
+
+  font-family: Arial, Helvetica, sans-serif;
+
+  background: #080e1b;
+
+  color: var(--white);
+
+  overflow: hidden;
+
+}
+
+button {
+
+  font: inherit;
+
+  color: inherit;
+
+  cursor: pointer;
+
+  touch-action: manipulation;
+
+}
+
+button:focus-visible {
+
+  outline: 3px solid #80b9ff;
+
+  outline-offset: 3px;
+
+}
+
+/* MAIN DISPLAY */
+
+#board {
+
+  width: 100vw;
+
+  height: 100dvh;
+
+  position: relative;
+
+  overflow: hidden;
+
+  background:
+
+    radial-gradient(ellipse at 65% 55%,
+
+      #dc719d 0%, transparent 34%),
+
+    radial-gradient(ellipse at 25% 15%,
+
+      #1654a7 0%, transparent 45%),
+
+    linear-gradient(160deg,
+
+      #102c65 0%, #202957 50%, #080e29 100%);
+
+}
+
+/* TOP BAR */
+
+.topbar {
+
+  height: 82px;
+
+  padding: 0 28px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  background: rgba(5, 16, 39, 0.28);
+
+}
+
+.brand {
+
+  font-size: clamp(18px, 3vw, 30px);
+
+  font-weight: 800;
+
+  letter-spacing: 1px;
+
+}
+
+.top-actions {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+}
+
+.icon-button {
+
+  border: 0;
+
+  background: transparent;
+
+  min-width: 44px;
+
+  min-height: 44px;
+
+  border-radius: 12px;
+
+  font-size: 23px;
+
+}
+
+.icon-button:hover {
+
+  background: rgba(255,255,255,.13);
+
+}
+
+/* LEFT NAVIGATION */
+
+.sidebar {
+
+  position: absolute;
+
+  left: 0;
+
+  top: 82px;
+
+  bottom: 0;
+
+  width: 100px;
+
+  background: rgba(5, 14, 32, .66);
+
+  padding: 10px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 8px;
+
+  z-index: 2;
+
+}
+
+.nav-button {
+
+  width: 100%;
+
+  min-height: 76px;
+
+  border: 0;
+
+  border-radius: 14px;
+
+  background: transparent;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 6px;
+
+  font-size: 13px;
+
+}
+
+.nav-button .symbol {
+
+  font-size: 25px;
+
+}
+
+.nav-button:hover,
+
+.nav-button.active {
+
+  background: var(--blue);
+
+}
+
+/* HOME SCREEN */
+
+#home {
+
+  position: absolute;
+
+  top: 82px;
+
+  left: 100px;
+
+  right: 0;
+
+  bottom: 0;
+
+  padding: clamp(16px, 4vw, 55px);
+
+  overflow-y: auto;
+
+}
+
+.clock-area {
+
+  text-align: center;
+
+  margin: 12px 0 36px;
+
+}
+
+.clock {
+
+  font-size: clamp(58px, 12vw, 112px);
+
+  font-weight: 300;
+
+  letter-spacing: -4px;
+
+}
+
+.date {
+
+  font-size: clamp(15px, 2.5vw, 25px);
+
+  margin-top: 4px;
+
+}
+
+.apps {
+
+  display: grid;
+
+  grid-template-columns: repeat(4, minmax(75px, 120px));
+
+  justify-content: center;
+
+  gap: 28px;
+
+  margin: 0 auto;
+
+  max-width: 650px;
+
+}
+
+.app {
+
+  border: 0;
+
+  background: transparent;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  gap: 10px;
+
+  font-size: 15px;
+
+}
+
+.app-icon {
+
+  width: clamp(65px, 11vw, 100px);
+
+  height: clamp(65px, 11vw, 100px);
+
+  border-radius: 22px;
+
+  background: #1685f9;
+
+  display: grid;
+
+  place-items: center;
+
+  font-size: clamp(27px, 5vw, 45px);
+
+  box-shadow: 0 8px 25px #0002;
+
+  transition: transform .15s;
+
+}
+
+.app:hover .app-icon {
+
+  transform: scale(1.06);
+
+}
+
+.yellow { background: #ffb914; }
+
+.purple { background: #7435e8; }
+
+.green { background: #1cc889; }
+
+.pink { background: #e32e83; }
+
+.gray { background: #52647f; }
+
+/* INPUT SIDE PANEL */
+
+#inputPanel {
+
+  position: absolute;
+
+  top: 95px;
+
+  right: 12px;
+
+  bottom: 12px;
+
+  width: min(390px, calc(100vw - 112px));
+
+  min-width: 240px;
+
+  padding: 22px;
+
+  border-radius: 20px;
+
+  background: rgba(12, 23, 41, .97);
+
+  border: 1px solid rgba(255,255,255,.12);
+
+  box-shadow: 0 15px 60px #0008;
+
+  z-index: 5;
+
+  overflow-y: auto;
+
+}
+
+.panel-heading {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  margin-bottom: 20px;
+
+}
+
+.panel-heading h2 {
+
+  margin: 0;
+
+  font-size: 25px;
+
+}
+
+.close-button {
+
+  border: 0;
+
+  background: transparent;
+
+  font-size: 30px;
+
+  width: 44px;
+
+  height: 44px;
+
+  border-radius: 10px;
+
+}
+
+.close-button:hover {
+
+  background: #ffffff19;
+
+}
+
+.input-list {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 8px;
+
+}
+
+.input-button {
+
+  width: 100%;
+
+  min-height: 65px;
+
+  padding: 12px 14px;
+
+  border-radius: 14px;
+
+  border: 1px solid #ffffff12;
+
+  background: var(--card);
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 15px;
+
+  text-align: left;
+
+  font-size: 17px;
+
+}
+
+.input-button:hover {
+
+  background: #2b405e;
+
+}
+
+.input-button.selected {
+
+  background: #1555a9;
+
+  border-color: #398bff;
+
+}
+
+.input-symbol {
+
+  width: 35px;
+
+  text-align: center;
+
+  font-size: 23px;
+
+}
+
+.checkmark {
+
+  margin-left: auto;
+
+  font-size: 22px;
+
+}
+
+.auto-source {
+
+  margin-top: 22px;
+
+  min-height: 60px;
+
+  padding: 12px;
+
+  border-radius: 13px;
+
+  background: var(--card);
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 10px;
+
+}
+
+/* NO SIGNAL POPUP */
+
+#signalOverlay {
+
+  position: absolute;
+
+  inset: 0;
+
+  z-index: 20;
+
+  display: none;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(0, 0, 0, .76);
+
+  backdrop-filter: blur(5px);
+
+}
+
+#signalOverlay.show {
+
+  display: flex;
+
+}
+
+.signal-box {
+
+  width: min(440px, 100%);
+
+  padding: 34px 25px;
+
+  text-align: center;
+
+  border-radius: 20px;
+
+  background: #111c2d;
+
+  border: 1px solid #ffffff20;
+
+  box-shadow: 0 20px 80px #0009;
+
+  animation: popup .18s ease-out;
+
+}
+
+@keyframes popup {
+
+  from { transform: scale(.94); opacity: 0; }
+
+  to { transform: scale(1); opacity: 1; }
+
+}
+
+.signal-icon {
+
+  font-size: 65px;
+
+  margin-bottom: 14px;
+
+  color: #b8c6d9;
+
+}
+
+.signal-box h2 {
+
+  font-size: 28px;
+
+  margin: 0 0 10px;
+
+}
+
+.signal-box p {
+
+  color: #b7c2d2;
+
+  line-height: 1.5;
+
+  margin: 0 0 22px;
+
+}
+
+.signal-box strong {
+
+  color: white;
+
+}
+
+.primary-button {
+
+  min-height: 48px;
+
+  border: 0;
+
+  border-radius: 12px;
+
+  background: var(--blue);
+
+  padding: 12px 24px;
+
+  font-weight: bold;
+
+}
+
+.primary-button:hover {
+
+  background: #358bff;
+
+}
+
+/* SIMPLE SETTINGS / APP SCREENS */
+
+.content-screen {
+
+  position: absolute;
+
+  inset: 82px 0 0 100px;
+
+  padding: 35px;
+
+  overflow: auto;
+
+  background: #101c32;
+
+  z-index: 3;
+
+}
+
+.content-screen h1 {
+
+  margin-top: 0;
+
+}
+
+.setting-row {
+
+  padding: 18px;
+
+  margin: 12px 0;
+
+  background: #1c2a40;
+
+  border-radius: 12px;
+
+  display: flex;
+
+  justify-content: space-between;
+
+  gap: 12px;
+
+  align-items: center;
+
+}
+
+.setting-row input {
+
+  max-width: 140px;
+
+}
+
+#whiteboardCanvas {
+
+  width: 100%;
+
+  height: 65vh;
+
+  background: white;
+
+  border-radius: 12px;
+
+  touch-action: none;
+
+}
+
+/* SMALL SCREENS */
+
+@media (max-width: 600px) {
+
+  .topbar {
+
+    height: 65px;
+
+    padding: 0 12px;
+
+  }
+
+  .sidebar {
+
+    top: 65px;
+
+    width: 68px;
+
+    padding: 5px;
+
+  }
+
+  .nav-button {
+
+    min-height: 63px;
+
+    font-size: 10px;
+
+  }
+
+  .nav-button .symbol {
+
+    font-size: 21px;
+
+  }
+
+  #home {
+
+    top: 65px;
+
+    left: 68px;
+
+    padding: 14px;
+
+  }
+
+  .apps {
+
+    grid-template-columns: repeat(2, minmax(70px, 110px));
+
+    gap: 20px;
+
+  }
+
+  #inputPanel {
+
+    top: 76px;
+
+    right: 8px;
+
+    bottom: 8px;
+
+    padding: 14px;
+
+    width: min(330px, calc(100vw - 82px));
+
+  }
+
+  .input-button {
+
+    min-height: 56px;
+
+    font-size: 15px;
+
+  }
+
+  .content-screen {
+
+    inset: 65px 0 0 68px;
+
+    padding: 16px;
+
+  }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div id="board">
+
+  <header class="topbar">
+
+    <div class="brand">CLEVERTOUCH</div>
+
+    <div class="top-actions">
+
+      <button class="icon-button"
+
+        aria-label="Inputs"
+
+        title="Inputs"
+
+        onclick="toggleInputs()">▣</button>
+
+      <button class="icon-button"
+
+        aria-label="Settings"
+
+        title="Settings"
+
+        onclick="showScreen('settings')">⚙</button>
+
+      <button class="icon-button"
+
+        aria-label="Power"
+
+        title="Power"
+
+        onclick="showPowerMenu()">⏻</button>
+
+      <span id="topClock">09:24</span>
+
+    </div>
+
+  </header>
+
+  <nav class="sidebar">
+
+    <button class="nav-button active"
+
+      onclick="showScreen('home')">
+
+      <span class="symbol">⌂</span>Home
+
+    </button>
+
+    <button class="nav-button"
+
+      onclick="showScreen('whiteboard')">
+
+      <span class="symbol">✎</span>Whiteboard
+
+    </button>
+
+    <button class="nav-button"
+
+      onclick="showScreen('files')">
+
+      <span class="symbol">▱</span>Files
+
+    </button>
+
+    <button class="nav-button"
+
+      onclick="showScreen('browser')">
+
+      <span class="symbol">◎</span>Browser
+
+    </button>
+
+    <button class="nav-button"
+
+      onclick="showScreen('apps')">
+
+      <span class="symbol">▦</span>Apps
+
+    </button>
+
+    <button class="nav-button"
+
+      onclick="showScreen('favourites')">
+
+      <span class="symbol">☆</span>Favourites
+
+    </button>
+
+  </nav>
+
+  <!-- HOME: THIS IS THE WORKING LUX INPUT -->
+
+  <main id="home">
+
+    <div class="clock-area">
+
+      <div class="clock" id="bigClock">09:24</div>
+
+      <div class="date" id="dateText">Welcome to CleverTouch</div>
+
+    </div>
+
+    <div class="apps">
+
+      <button class="app" onclick="showScreen('whiteboard')">
+
+        <span class="app-icon">▧</span>
+
+        Whiteboard
+
+      </button>
+
+      <button class="app" onclick="showScreen('files')">
+
+        <span class="app-icon yellow">▰</span>
+
+        Files
+
+      </button>
+
+      <button class="app" onclick="showScreen('browser')">
+
+        <span class="app-icon">◎</span>
+
+        Browser
+
+      </button>
+
+      <button class="app" onclick="showScreen('apps')">
+
+        <span class="app-icon purple">▣</span>
+
+        Screen Share
+
+      </button>
+
+      <button class="app" onclick="showScreen('apps')">
+
+        <span class="app-icon green">▦</span>
+
+        Apps
+
+      </button>
+
+      <button class="app" onclick="showScreen('favourites')">
+
+        <span class="app-icon pink">★</span>
+
+        Favourites
+
+      </button>
+
+      <button class="app" onclick="showScreen('settings')">
+
+        <span class="app-icon gray">⚙</span>
+
+        Settings
+
+      </button>
+
+    </div>
+
+  </main>
+
+  <!-- INPUT SELECTOR -->
+
+  <aside id="inputPanel" hidden>
+
+    <div class="panel-heading">
+
+      <h2>Input</h2>
+
+      <button class="close-button"
+
+        aria-label="Close inputs"
+
+        onclick="toggleInputs(false)">×</button>
+
+    </div>
+
+    <div class="input-list" id="inputList"></div>
+
+    <div class="auto-source">
+
+      <span>☼ &nbsp; Auto source</span>
+
+      <input type="checkbox" id="autoSource"
+
+        aria-label="Auto source">
+
+    </div>
+
+  </aside>
+
+  <!-- OTHER SCREENS -->
+
+  <section class="content-screen" id="settings" hidden>
+
+    <h1>⚙ Settings</h1>
+
+    <div class="setting-row">
+
+      <span>Brightness</span>
+
+      <input type="range" min="10" max="100" value="80"
+
+        oninput="setBrightness(this.value)">
+
+    </div>
+
+    <div class="setting-row">
+
+      <span>Volume</span>
+
+      <input type="range" min="0" max="100" value="50">
+
+    </div>
+
+    <div class="setting-row">
+
+      <span>Current input</span>
+
+      <strong id="currentInput">LUX</strong>
+
+    </div>
+
+    <button class="primary-button"
+
+      onclick="toggleInputs(true)">Change input</button>
+
+  </section>
+
+  <section class="content-screen" id="whiteboard" hidden>
+
+    <h1>Whiteboard</h1>
+
+    <p>Draw with your finger or mouse.</p>
+
+    <button class="primary-button"
+
+      onclick="clearBoard()">Clear board</button>
+
+    <br><br>
+
+    <canvas id="whiteboardCanvas"></canvas>
+
+  </section>
+
+  <section class="content-screen" id="files" hidden>
+
+    <h1>Files</h1>
+
+    <p>This is the simulated file manager.</p>
+
+    <input type="file" id="filePicker">
+
+    <p id="fileMessage">Choose a file to display its name.</p>
+
+  </section>
+
+  <section class="content-screen" id="browser" hidden>
+
+    <h1>Browser</h1>
+
+    <p>Enter a website to open in a new tab.</p>
+
+    <form onsubmit="openWebsite(event)">
+
+      <input id="website" type="text"
+
+        placeholder="example.com"
+
+        style="width:70%;padding:12px">
+
+      <button class="primary-button">Go</button>
+
+    </form>
+
+    <p>Some websites prevent being embedded in other pages.</p>
+
+  </section>
+
+  <section class="content-screen" id="apps" hidden>
+
+    <h1>Apps & Screen Share</h1>
+
+    <p>This area represents the board's application launcher.</p>
+
+    <p>Screen sharing requires a compatible sharing connection.</p>
+
+  </section>
+
+  <section class="content-screen" id="favourites" hidden>
+
+    <h1>Favourites</h1>
+
+    <p>Your favourite apps would appear here.</p>
+
+  </section>
+
+  <!-- NO SIGNAL POPUP -->
+
+  <div id="signalOverlay" role="dialog"
+
+    aria-modal="true" aria-labelledby="signalTitle">
+
+    <div class="signal-box">
+
+      <div class="signal-icon">▱</div>
+
+      <h2 id="signalTitle">No Signal</h2>
+
+      <p>
+
+        No signal detected on
+
+        <strong id="signalInput">HDMI 1</strong>.<br>
+
+        Please check the connection or select another input.
+
+      </p>
+
+      <button class="primary-button"
+
+        onclick="returnToLux()">Return to LUX</button>
+
+    </div>
+
+  </div>
+
+  <!-- POWER MENU -->
+
+  <div id="powerOverlay" style="
+
+    display:none; position:absolute; inset:0; z-index:30;
+
+    background:#000b; align-items:center; justify-content:center;
+
+    padding:20px;">
+
+    <div class="signal-box">
+
+      <h2>Power</h2>
+
+      <p>What would you like to do?</p>
+
+      <button class="primary-button"
+
+        onclick="closePowerMenu()">Cancel</button>
+
+      <button class="primary-button"
+
+        onclick="simulateSleep()">Sleep</button>
+
+      <button class="primary-button"
+
+        onclick="simulateRestart()">Restart</button>
+
+      <button class="primary-button"
+
+        onclick="simulateShutdown()">Shut down</button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+const inputs = [
+
+  { name: "LUX", symbol: "▣" },
+
+  { name: "HDMI 1", symbol: "▱" },
+
+  { name: "HDMI 2", symbol: "▱" },
+
+  { name: "HDMI 3", symbol: "▱" },
+
+  { name: "Type-C", symbol: "━" },
+
+  { name: "VGA", symbol: "▦" }
+
+];
+
+let activeInput = "LUX";
+
+let currentScreen = "home";
+
+const panel = document.getElementById("inputPanel");
+
+const overlay = document.getElementById("signalOverlay");
+
+const inputList = document.getElementById("inputList");
+
+function renderInputs() {
+
+  inputList.innerHTML = "";
+
+  inputs.forEach(input => {
+
+    const button = document.createElement("button");
+
+    button.className = "input-button" +
+
+      (activeInput === input.name ? " selected" : "");
+
+    button.innerHTML = `
+
+      <span class="input-symbol">${input.symbol}</span>
+
+      <span>${input.name}</span>
+
+      <span class="checkmark">${
+
+        activeInput === input.name ? "✓" : ""
+
+      }</span>
+
+    `;
+
+    button.setAttribute("aria-pressed",
+
+      String(activeInput === input.name));
+
+    button.addEventListener("click", () => {
+
+      selectInput(input.name);
+
+    });
+
+    inputList.appendChild(button);
+
+  });
+
+}
+
+function toggleInputs(force) {
+
+  const shouldOpen = typeof force === "boolean"
+
+    ? force
+
+    : panel.hidden;
+
+  panel.hidden = !shouldOpen;
+
+}
+
+function selectInput(name) {
+
+  activeInput = name;
+
+  document.getElementById("currentInput").textContent = name;
+
+  renderInputs();
+
+  if (name === "LUX") {
+
+    // LUX is the only working input.
+
+    overlay.classList.remove("show");
+
+    showScreen("home");
+
+    toggleInputs(false);
+
+  } else {
+
+    // Every other input displays No Signal.
+
+    document.getElementById("signalInput").textContent = name;
+
+    document.getElementById("signalTitle").textContent = "No Signal";
+
+    overlay.classList.add("show");
+
+    toggleInputs(false);
+
+  }
+
+}
+
+function returnToLux() {
+
+  activeInput = "LUX";
+
+  renderInputs();
+
+  overlay.classList.remove("show");
+
+  showScreen("home");
+
+  toggleInputs(false);
+
+  document.getElementById("currentInput").textContent = "LUX";
+
+}
+
+function showScreen(name) {
+
+  // Navigating home represents returning to the LUX display.
+
+  if (activeInput !== "LUX") {
+
+    activeInput = "LUX";
+
+    renderInputs();
+
+    document.getElementById("currentInput").textContent = "LUX";
+
+  }
+
+  overlay.classList.remove("show");
+
+  document.getElementById("powerOverlay").style.display = "none";
+
+  document.querySelectorAll(".content-screen").forEach(screen => {
+
+    screen.hidden = true;
+
+  });
+
+  document.getElementById("home").style.display = "none";
+
+  if (name === "home") {
+
+    document.getElementById("home").style.display = "";
+
+  } else {
+
+    const screen = document.getElementById(name);
+
+    if (screen) screen.hidden = false;
+
+  }
+
+  currentScreen = name;
+
+  document.querySelectorAll(".nav-button").forEach(button => {
+
+    button.classList.toggle(
+
+      "active",
+
+      button.getAttribute("onclick")?.includes("'" + name + "'")
+
+    );
+
+  });
+
+  if (name === "whiteboard") {
+
+    setTimeout(resizeCanvas, 50);
+
+  }
+
+}
+
+function setBrightness(value) {
+
+  document.getElementById("board").style.filter =
+
+    `brightness(${value / 80})`;
+
+}
+
+function showPowerMenu() {
+
+  document.getElementById("powerOverlay").style.display = "flex";
+
+}
+
+function closePowerMenu() {
+
+  document.getElementById("powerOverlay").style.display = "none";
+
+}
+
+function simulateSleep() {
+
+  closePowerMenu();
+
+  document.getElementById("board").style.filter = "brightness(0.15)";
+
+  setTimeout(() => {
+
+    document.getElementById("board").style.filter = "";
+
+  }, 2500);
+
+}
+
+function simulateRestart() {
+
+  closePowerMenu();
+
+  returnToLux();
+
+  showScreen("home");
+
+  const clock = document.getElementById("bigClock");
+
+  clock.textContent = "Starting...";
+
+  setTimeout(updateClock, 1200);
+
+}
+
+function simulateShutdown() {
+
+  closePowerMenu();
+
+  document.getElementById("board").style.filter = "brightness(0)";
+
+  setTimeout(() => {
+
+    document.getElementById("board").style.filter = "";
+
+  }, 3000);
+
+}
+
+function openWebsite(event) {
+
+  event.preventDefault();
+
+  let address = document.getElementById("website").value.trim();
+
+  if (!address) return;
+
+  if (!/^https?:\/\//i.test(address)) {
+
+    address = "https://" + address;
+
+  }
+
+  window.open(address, "_blank", "noopener");
+
+}
+
+const canvas = document.getElementById("whiteboardCanvas");
+
+const ctx = canvas.getContext("2d");
+
+let drawing = false;
+
+function resizeCanvas() {
+
+  if (!canvas.clientWidth || !canvas.clientHeight) return;
+
+  const rect = canvas.getBoundingClientRect();
+
+  const oldImage = document.createElement("canvas");
+
+  oldImage.width = canvas.width;
+
+  oldImage.height = canvas.height;
+
+  oldImage.getContext("2d").drawImage(canvas, 0, 0);
+
+  canvas.width = rect.width * devicePixelRatio;
+
+  canvas.height = rect.height * devicePixelRatio;
+
+  ctx.scale(devicePixelRatio, devicePixelRatio);
+
+  ctx.lineWidth = 4;
+
+  ctx.lineCap = "round";
+
+  ctx.strokeStyle = "#1765d1";
+
+  if (oldImage.width && oldImage.height) {
+
+    ctx.drawImage(oldImage, 0, 0,
+
+      oldImage.width, oldImage.height,
+
+      0, 0, rect.width, rect.height);
+
+  }
+
+}
+
+function getPosition(event) {
+
+  const rect = canvas.getBoundingClientRect();
+
+  return {
+
+    x: event.clientX - rect.left,
+
+    y: event.clientY - rect.top
+
+  };
+
+}
+
+canvas.addEventListener("pointerdown", event => {
+
+  drawing = true;
+
+  canvas.setPointerCapture(event.pointerId);
+
+  const p = getPosition(event);
+
+  ctx.beginPath();
+
+  ctx.moveTo(p.x, p.y);
+
+});
+
+canvas.addEventListener("pointermove", event => {
+
+  if (!drawing) return;
+
+  const p = getPosition(event);
+
+  ctx.lineTo(p.x, p.y);
+
+  ctx.stroke();
+
+});
+
+function stopDrawing() {
+
+  drawing = false;
+
+}
+
+canvas.addEventListener("pointerup", stopDrawing);
+
+canvas.addEventListener("pointercancel", stopDrawing);
+
+function clearBoard() {
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+}
+
+document.getElementById("filePicker").addEventListener("change", event => {
+
+  const file = event.target.files[0];
+
+  document.getElementById("fileMessage").textContent =
+
+    file ? "Selected: " + file.name : "No file selected.";
+
+});
+
+function updateClock() {
+
+  const now = new Date();
+
+  const time = now.toLocaleTimeString([], {
+
+    hour: "2-digit",
+
+    minute: "2-digit",
+
+    hour12: false
+
+  });
+
+  document.getElementById("bigClock").textContent = time;
+
+  document.getElementById("topClock").textContent = time;
+
+  document.getElementById("dateText").textContent =
+
+    now.toLocaleDateString([], {
+
+      weekday: "long",
+
+      year: "numeric",
+
+      month: "long",
+
+      day: "numeric"
+
+    });
+
+}
+
+renderInputs();
+
+updateClock();
+
+setInterval(updateClock, 1000);
+
+window.addEventListener("resize", () => {
+
+  if (currentScreen === "whiteboard") resizeCanvas();
+
+});
+
+</script>
+
+</body>
+
+</html>
